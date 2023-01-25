@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+<body>
+  <!-- # Search bar -->
+    <form class="input-group w-30 p-3" method="GET" action="{% url 'index' %}">
+        <input type="text" class="form-control rounded" placeholder="Search by title..." name="q" aria-label="Search" aria-describedby="search-addon" />
+        <button type="button" class="btn btn-outline-primary">search</button>
+    </form>
+
+    <!-- Create News Form -->
+    <div style="margin-left: auto; margin-right: auto; width: fit-content; margin-top: 0.5in;">
+        <form action="{% url 'create' %}" method="POST"> {% csrf_token %}
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" name="title" placeholder="title">
+              </div>
+              <div class="mb-3">
+                <label  for="Description" class="form-label">Description Text Area</label>
+                <textarea class="form-control" name="description" rows="3"></textarea>
+              </div>
+            <div class="mb-3">
+                <label for="author" class="form-label">Author</label>
+                <input type="text" class="form-control" name="author" placeholder="author">
+              </div>
+              <div class="col-auto text-center">
+                <button type="submit" class="btn btn-primary mb-3">Create a News</button>
+              </div>
+        </form>
+    </div>
+
+
+
+    <!-- Show all the news -->
+        {% for new in page_obj %}
+        <div class="card text-center pt-5">
+            <div class="card-header">
+              {{new.author}}
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{new.title}}</h5>
+              <p class="card-text">{{new.description}}</p>
+            </div>
+            <div class="card-footer text-muted">
+              {{new.date_uploaded}}
+            </div>
+        </div>
+        <div class="col-md-12 text-center">
+          <a href="{% url 'edit' new.id %}" type="button" class="btn btn-primary text-center">Edit</a>
+          <a href="{% url 'delete' new.id %}" type="button" class="btn btn-danger text-center">Delete</a>
+        </div>
+        {% endfor %}
+
+
+<!-- Pagination -->
+  <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+          <li class="page-item">
+          {% if page_obj.has_previous %}
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+          {% endif %}
+          <li class="page-item"> 
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+          </li>
+          {% if page_obj.has_next %}
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+          {% endif %}
+          </li>
+      </ul>
+  </nav>
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+</html>
+
